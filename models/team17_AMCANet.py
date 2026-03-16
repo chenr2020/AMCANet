@@ -1,4 +1,3 @@
-# 与v23的区别：删除了attention中的gelu，加了一个conv1x1，在simplegate加了一个normalize；下采样调整为2^n
 import functools
 import torch
 import torch.nn as nn
@@ -126,52 +125,3 @@ class AMCANet(nn.Module):
         
         # 返回最终输出
         return out
-
-from tqdm import tqdm
-from fvcore.nn import flop_count_table, FlopCountAnalysis, ActivationCountAnalysis
-
-if __name__ == '__main__':
-    clip = 500
-    h, w = 1280, 720
-    scale = 4
-    model = AMCANet(in_nc=3, out_nc=3, dim = 48, n_blocks = 8, upscaling_factor=scale,num_heads=3)
-    model = model.cuda()
-    model.eval()
-    dummy_input = torch.randn(1, 3, h // scale, w // scale).cuda()
-    # HAT模型比较特殊，要求输入是窗口大小的倍数，直接手动指定输入大小为320×176（320×180的近似）
-    # CodeFormer模型是人脸复原，输入大小设置为540×540
-    #dummy_input = torch.randn(1, 3, 320, 180).cuda() 
-    '''
-    from thop import profile,clever_format
-    flops,params = profile(model,inputs=(dummy_input,))
-    flops,params = clever_format([flops,params],"%.3f")
-    print(flops)
-    print(params)
-    '''
-    start = torch.cuda.Event(enable_timing=True)
-    end = torch.cuda.Event(enable_timing=True)
-    runtime = 0
-
-  #  model.eval()
-    with torch.no_grad():
-    # print(model)
-        for _ in tqdm(range(clip)):
-            sr = model(dummy_input)
-
-        for _ in tqdm(range(clip)):
-            start.record()
-            sr = model(dummy_input)
-            end.record()
-            torch.cuda.synchronize()
-            runtime += start.elapsed_time(end)
-
-        avg_time = runtime / clip
-        max_memory = torch.cuda.max_memory_allocated(torch.cuda.current_device()) / 1024 ** 2
-
-        print(model.__class__.__name__)
-        print(f'{clip} Number Frames x{scale} SR Per Frame Time: {avg_time :.6f} ms')
-        print(f' x{scale}SR FPS: {(1000 / avg_time):.6f} FPS')
-        print(f' Max Memery {max_memory:.6f} [M]')
-        output = model(dummy_input)
-        print(output.shape)
-        print(flop_count_table(FlopCountAnalysis(model, dummy_input), activations=ActivationCountAnalysis(model, dummy_input)))
