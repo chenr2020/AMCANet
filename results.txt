@@ -1,3 +1,4 @@
 Model               	Val PSNR  	Val Time [ms] 	Params [M]	FLOPs [G] 	Acts [M]	Mem [M] 	Conv    
 00_SPAN             	26.94     	12.11         	0.151     	9.83      	41.68   	708.58  	  22    
 01_AMCANet          	26.90     	30.48         	0.086     	5.24      	192.17  	260.14  	 136    
+17_AMCANet          	26.90     	42.54         	0.086     	5.24      	192.17  	260.14  	 136    

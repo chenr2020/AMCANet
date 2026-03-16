@@ -30,10 +30,10 @@ def select_model(args, device):
         stat_dict = torch.load(model_path)
         model.load_state_dict(stat_dict, strict=False)
     elif model_id == 17:
-        from models.team01_AMCANet import AMCANet
+        from models.team17_AMCANet import AMCANet
         name, data_range = f"{model_id:02}_AMCANet", 1.0
         #model_path = os.path.join('model_zoo', f'team01_AMCANet.pth')
-        model_path = os.path.join('model_zoo', f'team01_AMCANet.pth')
+        model_path = os.path.join('model_zoo', f'team17_AMCANet.pth')
         model = AMCANet(in_nc=3, out_nc=3, dim = 32, n_blocks = 7, upscaling_factor=4,num_heads=2).eval().to(device)
         stat_dict = torch.load(model_path)['params_ema']
         model.load_state_dict(stat_dict, strict=True)
