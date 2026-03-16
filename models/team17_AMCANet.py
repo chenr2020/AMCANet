@@ -111,7 +111,7 @@ class AMCANet(nn.Module):
 
         self.tail = nn.Conv2d(dim, out_nc * upscaling_factor * upscaling_factor, 3, 1, 1, bias=True)
         self.pixel_shuffle = nn.PixelShuffle(upscaling_factor)
-        #self.cuda()(torch.randn(1, 3, 256, 256).cuda())
+        self.cuda()(torch.randn(1, 3, 256, 256).cuda())
 
     def forward(self, x):
         fea = self.head(x)
