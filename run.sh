@@ -2,7 +2,8 @@
 CUDA_VISIBLE_DEVICES=0 python test_demo.py \
     --data_dir /home/chenr/Data/PROJECT/NTIRE2025_ESR_Challenge \
     --save_dir ./results \
-    --model_id 17
+    --model_id 17 \
+    --include_test
 
 
 # --- When only LSDIR_DIV2K_test datasets are included (For Organizer) ---
